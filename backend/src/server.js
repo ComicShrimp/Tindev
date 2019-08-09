@@ -8,7 +8,7 @@ const cors = require('cors');
 const server = express();
 
 // Faz com que utilize apenas javascript para interagir com DB
-mongoose.connect('mongodb+srv://mario:mario123@tindev-ao31x.mongodb.net/omnistack8?retryWrites=true&w=majority', {
+mongoose.connect('your_server_url_here', {
     useNewUrlParser: true,
 });
 
