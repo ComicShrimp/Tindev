@@ -19,7 +19,17 @@ module.exports = {
 
         // Verifica se deu match
         if(targetDev.likes.includes(loggedDev._id)) {
-            console.log('Deu Match');
+            const loggedSocket = request.connectUsers[user];
+            const targetSocket = request.connectUsers[devId];
+
+            if (loggedSocket) {
+                request.io.to(loggedSocket).emit('match', targetDev);
+            }
+
+            if (targetSocket) {
+                request.io.to(targetSocket).emit('match', loggedDev);
+            }
+
         }
 
         // Adiciona à lista de likes do logged dev o targetdev

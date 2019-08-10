@@ -7,6 +7,8 @@ import logo from '../assets/logo.svg'; // Importação da imagem
 import dislike from '../assets/dislike.svg';
 import like from '../assets/like.svg';
 import './main.css'; // Importação do css
+import io from 'socket.io-client' // Cliente websocket
+import itsamatch from '../assets/itsamatch.png';
 
 import api from '../services/api'; // Importação da classe da API
 
@@ -16,6 +18,7 @@ export default function Main({ match }) {
 
     // Inicia a variavel users e setUsers com um array vazio
     const [users, setUsers] = useState([]);
+    const [matchDev, setMatchDev] = useState();
 
     // Faz uma chamada API quando a tela for carregada
     // Recebe dois parametros(função a ser executada, quando  vai ser executada)
@@ -35,6 +38,20 @@ export default function Main({ match }) {
         }
 
         loadUsers();
+    }, [match.params.id]);
+
+    // userEffect somente para o Webhook
+    useEffect(() => {
+        const socket = io('http://localhost:3333', {
+            query: {
+                user: match.params.id
+            }
+        });
+
+        socket.on('match', dev => {
+            setMatchDev(dev)
+        });
+
     }, [match.params.id]);
 
     // Lida com a ação do butão de like
@@ -97,6 +114,18 @@ export default function Main({ match }) {
             ) : (
                     <div className="empty">Acabou :(</div>
                 )}
+
+            {matchDev && (
+                <div className="match-container">
+                    <img src={itsamatch} alt="Its a match" />
+
+                    <img className="avatar" src={matchDev.avatar} alt="" />
+                    <strong>{matchDev.name}</strong>
+                    <p>{matchDev.bio}</p>
+
+                    <button type="button" onClick={() => setMatchDev(false)}>Fechar</button>
+                </div>
+            )}
         </div>
     );
 }
